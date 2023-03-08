@@ -20,5 +20,4 @@ class Minesweeper:
         minas = random.sample([numero for fila in matriz for numero in fila], 6)
         print(minas)
 
-    def reveal_cell(self, row, col):
-        
+Minesweeper.initialize_board()
