@@ -1,12 +1,9 @@
 import random 
-
-
 class Cell:
     def __init__(self):
         self.is_mine = False
         self.is_revealed = False
         self.adjacent_mine = False
-
 
 class Minesweeper:
     def __init__(self, rows, cols, num_mines):
@@ -16,16 +13,28 @@ class Minesweeper:
         self.tablero = []
 
     def initialize_board(self):
-        self.tablero = [[Cell()]*self.cols for _ in range(self.rows)]
+        self.tablero = [[0]*self.cols for _ in range(self.rows)]
+        for linea in self.tablero:
+            for elemento in linea:
+                elemento = Cell()
+                
+        for i in range(self.num_mines):
+            columna = random.randint(0,self.cols-1)
+            fila = random.randint(0,self.rows-1)
+            while self.tablero[columna][fila].is_mine:
+                columna = random.randint(0,self.cols-1)
+                fila = random.randint(0,self.rows-1)
+            print(f"{columna}, {fila}")
+            self.tablero[columna][fila].is_mine = True
 
     def __str__(self):
         todo = ''
         for line in self.tablero:
             for element in line:
                 if element.is_mine:
-                    todo += '+'
+                    todo += '+ '
                 else:
-                    todo += '*'
+                    todo += '* '
             todo += '\n'
         return todo
 
