@@ -3,7 +3,7 @@ class Cell:
     def __init__(self):
         self.is_mine = False
         self.is_revealed = False
-        self.adjacent_mine = False
+        self.num_mines = 0
 
 class Minesweeper:
     def __init__(self, rows, cols, num_mines):
@@ -37,7 +37,6 @@ class Minesweeper:
                     todo += '* '
             todo += '\n'
         return todo
-
 
 tablero = Minesweeper(5, 5, 7)
 tablero.initialize_board()
