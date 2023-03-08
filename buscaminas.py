@@ -14,16 +14,16 @@ class Minesweeper:
 
     def initialize_board(self):
         self.tablero = [[0]*self.cols for _ in range(self.rows)]
-        for linea in self.tablero:
-            for elemento in linea:
-                elemento = Cell()
-                
+        for i in range(self.cols):
+            for j in range(self.rows):
+                self.tablero[i][j] = Cell()
+
         for i in range(self.num_mines):
-            columna = random.randint(0,self.cols-1)
-            fila = random.randint(0,self.rows-1)
+            columna = random.randint(0, self.cols-1)
+            fila = random.randint(0, self.rows-1)
             while self.tablero[columna][fila].is_mine:
-                columna = random.randint(0,self.cols-1)
-                fila = random.randint(0,self.rows-1)
+                columna = random.randint(0, self.cols-1)
+                fila = random.randint(0, self.rows-1)
             print(f"{columna}, {fila}")
             self.tablero[columna][fila].is_mine = True
 
