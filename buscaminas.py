@@ -26,10 +26,10 @@ class Minesweeper:
                 fila = random.randint(0, self.rows-1)
             print(f"{columna}, {fila}")
             self.tablero[columna][fila].is_mine = True
-            for j in range(3):
-                for k in range(3):
-                    if (columna-j > 0 and fila-k > 0) or (columna+j < self.rows and fila+k < self.cols) or (columna-j > 0 and fila+k < self.cols) or (fila-k > 0 and columna+j < self.rows):
-                        self.tablero[j][k].adj_mines+=1
+            for j in range(-1, 2):
+                for k in range(-1, 2):
+                    if (columna+j > 0 and columna+j < self.cols) and (fila+k > 0 and fila+k < self.rows): 
+                        self.tablero[columna+j][fila+k].adj_mines += 1
 
     def __str__(self):
         todo = ''
