@@ -32,10 +32,9 @@ class Minesweeper:
     
     def reveal_cell(self,row,col):
         if row in range(self.rows) and col in range(self.cols):
-            self.tablero[col][row].is_revealed == True
+            self.tablero[col][row].is_revealed = True
 
     def __str__(self):
-
         tablero = ""
         for line in self.tablero:
             for element in line:
