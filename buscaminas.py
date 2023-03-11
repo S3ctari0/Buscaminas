@@ -69,8 +69,6 @@ class Minesweeper:
         return board
 
     def is_win(self):
-        if self.game_over:
-            print("Juego Perdido")
         if self.num_revealed == self.cols*self.rows - self.num_mines:
             return True
         return False
