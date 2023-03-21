@@ -18,64 +18,66 @@ class Minesweeper:
         self.game_over = False
 
     def initialize_board(self):
-        self.board = [[0]*self.rows for _ in range(self.cols)]
-        for i in range(self.rows):
-            for j in range(self.cols):
-                self.board[i][j] = Cell()
-
-        for i in range(self.num_mines):
-            row = random.randint(0, self.rows-1)
-            col = random.randint(0, self.cols-1)
+        self.board = [[Cell() for _ in range(self.cols)] for _ in range(self.rows)]
+        mines = random.sample(range(self.rows*self.cols), self.num_mines)
+        for index in mines:
+            row, col = divmod(index, self.cols)
             while self.board[row][col].is_mine:
-                row = random.randint(0, self.rows-1)
-                col = random.randint(0, self.cols-1)
+                index = random.randint(0, self.rows*self.cols-1)
+                row, col = divmod(index, self.cols)
             self.board[row][col].is_mine = True
-            for j in range(-1, 2):
-                for k in range(-1, 2):
-                    if (row+j in range(self.rows)) and (col+k in range(self.cols)):
-                        self.board[row+j][col+k].adjacent_mines += 1
+            for i in range(max(0, row-1), min(self.rows, row+2)):
+                for j in range(max(0, col-1), min(self.cols, col+2)):
+                    self.board[i][j].adjacent_mines += 1
 
     def reveal_cell(self, row, col):
-        if col in range(self.cols) and row in range(self.rows):
-            if self.board[row][col].is_revealed:
-                return
-            self.board[row][col].is_revealed = True
+        if not (0 <= row < self.rows and 0 <= col < self.cols):
+            return
+        stack = [(row, col)]
+        while stack:
+            r, c = stack.pop()
+            if self.board[r][c].is_revealed:
+                continue
+            self.board[r][c].is_revealed = True
             self.num_revealed += 1
-            if self.board[row][col].is_mine:
+            if self.board[r][c].is_mine:
                 self.game_over = True
                 return
-            if self.board[row][col].adjacent_mines == 0:
-                self.reveal_cell(row-1, col)
-                self.reveal_cell(row, col-1)
-                self.reveal_cell(row+1, col)
-                self.reveal_cell(row, col+1)
+            if self.board[r][c].adjacent_mines == 0:
+                if r > 0:
+                    stack.append((r-1, c))
+                if c > 0:
+                    stack.append((r, c-1))
+                if r < self.rows-1:
+                    stack.append((r+1, c))
+                if c < self.cols-1:
+                    stack.append((r, c+1))
 
     def __str__(self):
-        board = "  "
-        for i in range(rows):
-            board += f' {i} '
-        board += '\n'
-        for index, line in enumerate(self.board):
-            board += f'{ index} '
-            for element in line:
-                if element.is_revealed is False:
-                    board += ' - '
-                    continue
-                if element.is_mine:
-                    board += ' X '
+        # generate header
+        header = "\t"
+        for i in range(self.cols):
+            header += str(i) + "\t"
+        # generate board
+        board = []
+        for row_index, row in enumerate(self.board):
+            row_str = f"{row_index} \t"
+            for cell in row:
+                if not cell.is_revealed:
+                    row_str += "-\t"
+                elif cell.is_mine:
+                    row_str += "X\t"
                 else:
-                    board += str(f" {element.adjacent_mines} ")
-            board += '\n'
-        return board
-
+                    row_str += str(cell.adjacent_mines) + "\t"
+            board.append(row_str)
+        return header + "\n" + "\n".join(board)
+    
     def is_win(self):
-        if self.num_revealed == self.rows*self.cols - self.num_mines and self.game_over is False:
-            return True
-        return False
+        return self.num_revealed == self.rows*self.cols - self.num_mines and not self.game_over
 
 
 rows = int(input("Ingrese el número de filas: "))
-cols = int(input("Ingrese el número de rowumnas: "))
+cols = int(input("Ingrese el número de columnas: "))
 mines = int(input("Ingrese el número de minas: "))
 
 
@@ -85,7 +87,7 @@ board.initialize_board()
 
 while (board.game_over is False or board.is_win()):
     row = int(input("Ingrese el número de la fila de la casilla a revelar: "))
-    col = int(input("Ingrese el número de la rowumna de la casilla a revelar: "))
+    col = int(input("Ingrese el número de la columna de la casilla a revelar: "))
     board.reveal_cell(row, col)
     if board.game_over:
         print("¡Lo siento, has perdido!")
